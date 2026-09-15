@@ -20,7 +20,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $parents = Category::orderBy('name')->get();
+        $parents = Category::orderBy('title')->get();
 
         return view('admin.categories.create', compact('parents'));
     }
@@ -28,13 +28,12 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'parent_id' => 'nullable|exists:categories,id',
-            'description' => 'nullable|string',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
 
         Category::create($validated);
 
@@ -53,7 +52,7 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = Category::findOrFail($id);
-        $parents = Category::where('id', '!=', $id)->orderBy('name')->get();
+        $parents = Category::where('id', '!=', $id)->orderBy('title')->get();
 
         return view('admin.categories.edit', compact('category', 'parents'));
     }
@@ -63,13 +62,12 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
             'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id,
-            'description' => 'nullable|string',
         ]);
 
-        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
+        $validated['slug'] = $validated['slug'] ?? Str::slug($validated['title']);
 
         $category->update($validated);
 

@@ -192,7 +192,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <!-- Электроника -->
-                            @foreach($parentCategories as $parentCategory)
+                            @foreach($parentCategories ?? [] as $parentCategory)
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">
                                    {{ $parentCategory->title }}
