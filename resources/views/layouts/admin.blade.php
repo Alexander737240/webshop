@@ -146,7 +146,7 @@
         <a href="{{ route('admin.categories.index') }}" class="brand">
             <i class="fas fa-store"></i> ShopName Admin
         </a>
-        <div class="d-flex align-items-center gap-4">
+        <div class="d-flex align-items-center gap-3">
             <a href="{{ route('admin.categories.index') }}"
                class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <i class="fas fa-th-list me-1"></i> Категории
@@ -154,9 +154,42 @@
             <a href="/" class="nav-link">
                 <i class="fas fa-home me-1"></i> На сайт
             </a>
-            <span class="text-white-50 small">
-                <i class="fas fa-user-circle"></i> Администратор
-            </span>
+
+            @auth
+                <div class="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                       data-bs-toggle="dropdown">
+                        <img src="{{ auth()->user()->avatar_url }}"
+                             alt="{{ auth()->user()->name }}"
+                             class="rounded-circle"
+                             style="width: 32px; height: 32px; object-fit: cover;">
+                        <span class="text-white">{{ auth()->user()->name }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                <i class="fas fa-user me-2"></i>Профиль
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @else
+                <a href="{{ route('login') }}" class="nav-link">
+                    <i class="fas fa-sign-in-alt me-1"></i> Вход
+                </a>
+                <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-user-plus me-1"></i> Регистрация
+                </a>
+            @endauth
         </div>
     </div>
 </nav>
