@@ -1,13 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('admin.categories.index');
+    return redirect()->route('backpack.dashboard');
 });
 
 Route::middleware('guest')->group(function () {
@@ -27,8 +26,4 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
     Route::put('/', [ProfileController::class, 'update'])->name('update');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password');
     Route::delete('/avatar', [ProfileController::class, 'destroyAvatar'])->name('avatar.destroy');
-});
-
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('categories', CategoryController::class);
 });

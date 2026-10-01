@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    use CrudTrait;
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -32,10 +34,10 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): string
     {
-        if ($this->avatar && file_exists(storage_path('app/public/' . $this->avatar))) {
-            return asset('storage/' . $this->avatar);
+        if ($this->avatar && file_exists(storage_path('app/public/'.$this->avatar))) {
+            return asset('storage/'.$this->avatar);
         }
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=e94560&color=fff';
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=e94560&color=fff';
     }
 }

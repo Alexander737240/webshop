@@ -1,42 +1,51 @@
 <?php
 
-    namespace App\Models;
+namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Attributes\Fillable;
-    use Illuminate\Database\Eloquent\Factories\HasFactory;
-    use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Database\Eloquent\Relations\BelongsTo;
-    use Illuminate\Database\Eloquent\Relations\HasMany;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
-    /**
-     * @property int $parent_id
-     * @property string $slug
-     * @property string $title
-     * @property bool $active
-     */
-    #[Fillable('parent_id', 'slug', 'title', 'active')]
-    class Category extends Model
+class Category extends Model
+{
+    use CrudTrait;
+    use HasFactory;
+
+    protected $fillable = [
+        'parent_id',
+        'slug',
+        'title',
+        'active',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
+    public function parent(): BelongsTo
     {
-        use HasFactory;
-
-        public function parent(): BelongsTo
-        {
-            return $this->belongsTo(Category::class, 'parent_id', 'id');
-        }
-
-        public function children(): HasMany
-        {
-            return $this->hasMany(Category::class, 'parent_id', 'id');
-        }
-
-        public function products(): HasMany
-        {
-            return $this->hasMany(Product::class);
-        }
-    //    protected $fillable = [
-    //        'parent_id',
-    //        'slug',
-    //        'title',
-    //        'active'
-    //    ];
+        return $this->belongsTo(Category::class, 'parent_id', 'id');
     }
+
+    protected static function booted(): void
+    {
+        static::saving(function ($model) {
+            if (empty($model->slug) && ! empty($model->title)) {
+                $model->slug = Str::slug($model->title);
+            }
+        });
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id', 'id');
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+}
